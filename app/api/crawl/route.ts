@@ -1,11 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrivateKey } from "@/lib/keys";
 import jwt from 'jsonwebtoken';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const cheerio = require('cheerio');
+import * as https from "node:https";
+import * as cheerio from "cheerio";
+import fetch from 'node-fetch';
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
+  const ip = '76.76.21.201'; // Substitute with your target IP address
+  const host = 'vercel.com'; // Substitute with your target hostname
+
+  const agent = new https.Agent({
+    lookup: (hostname, options, callback) => {
+      if (hostname === host) {
+        callback(null, ip, 4); // Force resolve to the specified IP
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('dns').lookup(hostname, options, callback); // Default DNS resolution
+      }
+    }
+  });
+
   try {
     // Parse the request body
     const { url } = await req.json();
@@ -22,8 +36,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Make the request to the provided URL
     const response = await fetch(url, {
+      agent,
       method: 'GET',
       headers: {
+        Host: parsedUrl.hostname,
         'x-agent': xAgent,
         'x-agent-token': xAgentToken,
       },
