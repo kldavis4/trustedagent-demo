@@ -1,7 +1,16 @@
-import type { NextConfig } from "next";
+// next.config.js
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/trusted-agent/jwks',
+        destination: '/api/.well-known/trusted-agent/jwks',
+      }
+    ];
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
