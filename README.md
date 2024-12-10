@@ -29,3 +29,10 @@ npm run dev
 - `AGENT_PRIVATE_KEY`: The base64 encoded private key used to sign the JWT tokens.
 - `AGENT_PUBLIC_KEY`: The base64 encoded public key used to verify the JWT tokens.
 - `PROXY_IP`: The IP address of the proxy server used by the agent.
+
+## Usage
+
+### Query parameters
+
+- `trace`: Send trace header to the proxy server.
+- `headers`: Display response headers from the proxy server.
