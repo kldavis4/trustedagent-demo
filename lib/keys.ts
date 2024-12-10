@@ -11,7 +11,7 @@ let privateKey: string | undefined;
 export async function getPublicJwk(): Promise<JWK> {
   if (!jwk) {
     if (!process.env.AGENT_PUBLIC_KEY) {
-      throw new Error('Public key not set in environment variables');
+      throw new Error('Agent public key not set in environment variables');
     }
     // Convert PEM to KeyObject
     const keyObject = createPublicKey(Buffer.from(process.env.AGENT_PUBLIC_KEY, 'base64').toString('utf8'));
@@ -30,7 +30,7 @@ export async function getPublicJwk(): Promise<JWK> {
 export function getPrivateKey(): string {
   if (!privateKey) {
     if (!process.env.AGENT_PRIVATE_KEY) {
-      throw new Error('Private key not set in environment variables');
+      throw new Error('Agent private key not set in environment variables');
     }
     privateKey = Buffer.from(process.env.AGENT_PRIVATE_KEY, 'base64').toString('utf8');
   }
