@@ -15,7 +15,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const parsedUrl = new URL(url);
-    console.log({ privateKey: getPrivateKey(), parsedUrl})
 
     // Define the headers
     const xAgent = process.env.VERCEL_URL || 'http://localhost:3000';
