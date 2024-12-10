@@ -14,10 +14,14 @@ const { publicKey, privateKey } = generateKeyPairSync('rsa', {
 const publicKeyPem = publicKey.export({ type: 'pkcs1', format: 'pem' });
 const privateKeyPem = privateKey.export({ type: 'pkcs1', format: 'pem' });
 
-// Prepare the .env.local content
+// Encode keys in Base64
+const publicKeyBase64 = Buffer.from(publicKeyPem).toString('base64');
+const privateKeyBase64 = Buffer.from(privateKeyPem).toString('base64');
+
+// Prepare the .env.local content with Base64 encoded keys
 const envContent = `
-PRIVATE_KEY="${privateKeyPem.replace(/\n/g, '\\n')}"
-PUBLIC_KEY="${publicKeyPem.replace(/\n/g, '\\n')}"
+AGENT_PRIVATE_KEY="${privateKeyBase64}"
+AGENT_PUBLIC_KEY="${publicKeyBase64}"
 `;
 
 // Write the keys to .env.local
