@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import {useRouter, usePathname, useSearchParams} from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CrawlerPage() {
   const [url, setUrl] = useState('');
@@ -74,6 +76,12 @@ export default function CrawlerPage() {
     setUrl(link);
     await crawlUrl(link);
   };
+
+  const handleCopy = (value: string) => {
+    navigator.clipboard.writeText(value);
+    toast('Copied to clipboard');
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Crawler</h1>
@@ -110,7 +118,12 @@ export default function CrawlerPage() {
           <ul className="list-disc pl-5 space-y-2 text-xs">
             {Object.entries(headers).map(([key, value], index) => (
               <li key={index}>
-                <strong>{key}:</strong> {value}
+                <strong>{key}:</strong>
+                <span onClick={() => handleCopy(value)}
+                  className="cursor-pointer text-blue-600 hover:underline"
+                >
+                  {value}
+                </span>
               </li>
             ))}
           </ul>
@@ -145,6 +158,8 @@ export default function CrawlerPage() {
           <pre>{error}</pre>
         </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 }
