@@ -8,7 +8,7 @@ let jwk: JWK | undefined;
  * Throws an error if the public key is not set.
  */
 export async function getPublicJwk(): Promise<JWK> {
-  const publicKey = process.env.PUBLIC_KEY;
+  const publicKey = process.env.AGENT_PUBLIC_KEY;
   if (!publicKey) {
     throw new Error('Public key not set in environment variables');
   }
@@ -28,7 +28,7 @@ export async function getPublicJwk(): Promise<JWK> {
  * Throws an error if the private key is not set.
  */
 export function getPrivateKey(): string {
-  const privateKey = process.env.PRIVATE_KEY;
+  const privateKey = process.env.AGENT_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error('Private key not set in environment variables');
   }
