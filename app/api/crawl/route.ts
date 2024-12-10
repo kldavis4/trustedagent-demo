@@ -28,7 +28,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         'x-agent-token': xAgentToken,
       },
     });
-    console.log(xAgentToken)
 
     // Get the HTML content
     const html = await response.text();
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // Parse the HTML and extract URLs
     const $ = cheerio.load(html);
     const links: string[] = [];
-    $('a[href]').each((index: number, element: cheerio.Element) => {
+    $('a[href]').each((_: number, element: cheerio.Element) => {
       const href = $(element).attr('href');
       if (href) {
         // Convert relative links to absolute links
