@@ -1,16 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import {useRouter, usePathname, useSearchParams} from 'next/navigation';
 
 export default function CrawlerPage() {
   const [url, setUrl] = useState('');
   const [links, setLinks] = useState<string[]>([]);
+  const [headers, setHeaders] = useState<Record<string,string> | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
 
   const router = useRouter();
   const pathname = usePathname();
+  const showHeaders = searchParams.get('headers') === 'true';
+  const trace = searchParams.get('trace') === 'true';
 
   useEffect(() => {
     // Extract the URL from the path only once when the component mounts
@@ -32,11 +36,12 @@ export default function CrawlerPage() {
   const crawlUrl = async (targetUrl: string) => {
     if (loading || !targetUrl) return; // Prevent multiple concurrent requests
     setLinks([]);
+    setHeaders(null);
     setError('');
     setLoading(true); // Set loading state to true
 
     try {
-      const res = await fetch('/api/crawl', {
+      const res = await fetch(`/api/crawl?trace=${trace}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,8 +55,9 @@ export default function CrawlerPage() {
 
       const data = await res.json();
       setLinks(data.links || []);
+      setHeaders(data.headers || null);
       if (router && targetUrl !== url) {
-        router.push(`/crawler/${encodeURIComponent(targetUrl)}`);
+        router.push(`/crawler/${encodeURIComponent(targetUrl)}?headers=${showHeaders}&trace=${trace}`);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -95,6 +101,19 @@ export default function CrawlerPage() {
         <div className="flex justify-center items-center mb-6">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
           <span className="ml-2">Crawling...</span>
+        </div>
+      )}
+
+      {showHeaders && headers && !loading && (
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold mb-2">Response Headers</h2>
+          <ul className="list-disc pl-5 space-y-2 text-xs">
+            {Object.entries(headers).map(([key, value], index) => (
+              <li key={index}>
+                <strong>{key}:</strong> {value}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
