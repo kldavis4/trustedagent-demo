@@ -26,7 +26,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const trace = searchParams.get('trace');
 
     // Define the headers
-    const xAgent = process.env.VERCEL_URL || 'http://localhost:3000';
+    const xAgent = process.env.AGENT_URL || process.env.VERCEL_URL || 'http://localhost:3000';
     const xAgentToken = jwt.sign({ agent: xAgent, targetOrigin: `${parsedUrl.protocol}//${parsedUrl.hostname}` }, getPrivateKey(), { algorithm: 'RS256', expiresIn: '2h' });
 
     const headers: Record<string,string> = {
