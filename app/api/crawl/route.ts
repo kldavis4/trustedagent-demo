@@ -10,12 +10,22 @@ axios.defaults.proxy = {
   protocol: 'https',    // Use 'http' or 'https' based on your proxy server
 };
 
-// TODO add claims to the request inputs with proper defaults
+const stripPath = (url: string) => {
+  const parsedUrl = new URL(url);
+  return `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+}
+
+const withProtocol = (url: string) => {
+  if (!url.startsWith('http')) {
+    return `https://${url}`;
+  }
+  return url;
+}
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the request body
-    const { url } = await req.json();
+    const { url, targetOriginClaim, agentClaim } = await req.json();
 
     if (!url) {
       return new NextResponse('No URL provided in the request body', { status: 400 });
@@ -28,12 +38,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const trace = searchParams.get('trace');
 
     // Define the headers
-    let xAgent = process.env.AGENT_URL || process.env.VERCEL_URL || 'http://localhost:3000';
-    // Add protocol if missing
-    if (!xAgent.startsWith('http')) {
-      xAgent = `https://${xAgent}`;
-    }
-    const xAgentToken = jwt.sign({ agent: xAgent, targetOrigin: `${parsedUrl.protocol}//${parsedUrl.hostname}` }, getPrivateKey(), { algorithm: 'RS256', expiresIn: '2h' });
+    const xAgent = withProtocol(agentClaim || process.env.AGENT_URL || process.env.VERCEL_URL || 'http://localhost:3000');
+
+    const xAgentToken = jwt.sign({
+      agent: stripPath(withProtocol(xAgent)),
+      targetOrigin: stripPath(withProtocol(targetOriginClaim || `${parsedUrl.protocol}//${parsedUrl.hostname}`)) },
+      getPrivateKey(), { algorithm: 'RS256', expiresIn: '2h' }
+    );
 
     const headers: Record<string,string> = {
       'x-agent': xAgent,
@@ -47,9 +58,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const response = await axios.get(url, { headers });
 
     const html = response.data;
-
-    // Get the HTML content
-    // const html = await response.text();
 
     // Parse the HTML and extract URLs
     const $ = cheerio.load(html);

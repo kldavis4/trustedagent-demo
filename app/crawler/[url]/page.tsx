@@ -12,11 +12,17 @@ export default function CrawlerPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
+  const [agentClaim, setAgentClaim] = useState('')
+  const [targetOriginClaim, setTargetOriginClaim] = useState('')
 
   const router = useRouter();
   const pathname = usePathname();
   const showHeaders = searchParams.get('headers') === 'true';
   const trace = searchParams.get('trace') === 'true';
+
+  useEffect(() => {
+    setAgentClaim(process.env.NEXT_PUBLIC_AGENT_URL || window.location.hostname);
+  }, []);
 
   useEffect(() => {
     // Extract the URL from the path only once when the component mounts
@@ -26,16 +32,17 @@ export default function CrawlerPage() {
     // Check if the initial URL is valid and different from the current URL state
     if (initialUrl && initialUrl !== 'crawler' && url !== initialUrl) {
       setUrl(initialUrl);
-      crawlUrl(initialUrl);
+      setTargetOriginClaim(initialUrl);
+      crawlUrl(initialUrl, targetOriginClaim, agentClaim);
     }
   }, [pathname]); // Only run this effect when the pathname changes
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await crawlUrl(url);
+    await crawlUrl(url, targetOriginClaim, agentClaim);
   };
 
-  const crawlUrl = async (targetUrl: string) => {
+  const crawlUrl = async (targetUrl: string, targetOriginClaim: string, agentClaim: string) => {
     if (loading || !targetUrl) return; // Prevent multiple concurrent requests
     setLinks([]);
     setHeaders(null);
@@ -48,7 +55,7 @@ export default function CrawlerPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: targetUrl }),
+        body: JSON.stringify({ url: targetUrl, agentClaim, targetOriginClaim }),
       });
 
       if (!res.ok) {
@@ -74,7 +81,8 @@ export default function CrawlerPage() {
 
   const handleLinkClick = async (link: string) => {
     setUrl(link);
-    await crawlUrl(link);
+    setTargetOriginClaim(link);
+    await crawlUrl(link, targetOriginClaim, agentClaim);
   };
 
   const handleCopy = (value: string) => {
@@ -86,8 +94,8 @@ export default function CrawlerPage() {
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Crawler</h1>
       <form onSubmit={handleSubmit} className="mb-6">
-        <label className="block mb-2">
-          URL to crawl:
+        <div className="border border-gray-300 p-4 rounded mb-6">
+          <h2 className="text-lg font-semibold mb-4">URL to crawl:</h2>
           <input
             type="url"
             value={url}
@@ -95,14 +103,38 @@ export default function CrawlerPage() {
             required
             className="w-full p-2 border border-gray-300 rounded"
           />
-        </label>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          Crawl
-        </button>
+        </div>
+
+          <div className="border border-gray-300 p-4 rounded mb-6">
+            <h2 className="text-lg font-semibold mb-4">Claims</h2>
+            <label className="block mb-2">
+              Agent:
+              <input
+                type="url"
+                value={agentClaim}
+                onChange={(e) => setAgentClaim(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </label>
+            <label className="block mb-2">
+              Target Origin:
+              <input
+                type="url"
+                value={targetOriginClaim}
+                onChange={(e) => setTargetOriginClaim(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            disabled={loading}
+          >
+            Crawl
+          </button>
       </form>
 
       {loading && (
