@@ -76,7 +76,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     // Return the response data
-    return new NextResponse(JSON.stringify({ links, headers: response.headers }), { status: response.status });
+    return new NextResponse(JSON.stringify({ links, headers: response.headers, jwt: xAgentToken }), { status: response.status });
   } catch (error) {
     console.error('Error during crawling:', error);
     return new NextResponse('Error during crawling', { status: 500 });

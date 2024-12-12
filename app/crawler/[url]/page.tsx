@@ -17,10 +17,11 @@ export default function CrawlerPage() {
   const [targetOriginClaim, setTargetOriginClaim] = useState('')
   const [agentClaim, setAgentClaim] = useState(defaultAgentClaim)
   const [bypassCache, setBypassCache] = useState(false)
+  const [jwt, setJwt] = useState('')
+  const [showHeaders, setShowHeaders] = useState(searchParams.get('headers') === 'true')
 
   const router = useRouter();
   const pathname = usePathname();
-  const showHeaders = searchParams.get('headers') === 'true';
   const trace = searchParams.get('trace') === 'true';
 
   useEffect(() => {
@@ -64,8 +65,9 @@ export default function CrawlerPage() {
       const data = await res.json();
       setLinks(data.links || []);
       setHeaders(data.headers || null);
+      setJwt(data.jwt || '');
       if (router && targetUrl !== url) {
-        router.push(`/crawler/${encodeURIComponent(targetUrl)}?headers=${showHeaders}&trace=${trace}`);
+        router.push(`/crawler/${encodeURIComponent(targetUrl)}?trace=${trace}`);
       }
     } catch (err) {
       if (err instanceof Error) {
@@ -143,6 +145,21 @@ export default function CrawlerPage() {
         >
           Crawl
         </button>
+        <button
+          onClick={() => handleCopy(jwt)}
+          className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
+        >
+          Copy JWT
+        </button>
+
+        <button
+          onClick={() => setShowHeaders(!showHeaders)}
+          className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
+        >
+          {showHeaders ? 'Hide Headers' : 'Show Headers'}
+        </button>
       </form>
 
       {loading && (
@@ -153,8 +170,8 @@ export default function CrawlerPage() {
       )}
 
       {showHeaders && headers && !loading && (
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold mb-2">Response Headers</h2>
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold mb-2">Response Headers</h2>
           <ul className="list-disc pl-5 space-y-2 text-xs">
             {Object.entries(headers).map(([key, value], index) => (
               <li key={index}>
