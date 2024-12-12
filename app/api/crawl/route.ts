@@ -25,7 +25,7 @@ const withProtocol = (url: string) => {
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the request body
-    const { url, targetOriginClaim, agentClaim, bypassCache } = await req.json();
+    const { url, targetOriginClaim, agentClaim, bypassCache, jwt: token } = await req.json();
 
     if (!url) {
       return new NextResponse('No URL provided in the request body', { status: 400 });
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const headers: Record<string,string> = {
       'x-agent': xAgent,
-      'x-agent-token': xAgentToken,
+      'x-agent-token': token || xAgentToken,
     }
 
     if (trace === 'true') {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     // Return the response data
-    return new NextResponse(JSON.stringify({ links, headers: response.headers, jwt: xAgentToken }), { status: response.status });
+    return new NextResponse(JSON.stringify({ links, headers: response.headers, jwt: token || xAgentToken }), { status: response.status });
   } catch (error) {
     console.error('Error during crawling:', error);
     return new NextResponse('Error during crawling', { status: 500 });

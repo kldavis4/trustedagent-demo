@@ -17,8 +17,9 @@ export default function CrawlerPage() {
   const [targetOriginClaim, setTargetOriginClaim] = useState('')
   const [agentClaim, setAgentClaim] = useState(defaultAgentClaim)
   const [bypassCache, setBypassCache] = useState(false)
-  const [jwt, setJwt] = useState('')
+  const [jwt, setJwt] = useState(localStorage.getItem('jwt') || '')
   const [showHeaders, setShowHeaders] = useState(searchParams.get('headers') === 'true')
+  const [resetJwt, setResetJwt] = useState(false)
 
   const router = useRouter();
   const pathname = usePathname();
@@ -50,13 +51,18 @@ export default function CrawlerPage() {
     setError('');
     setLoading(true); // Set loading state to true
 
+    if (resetJwt) {
+      localStorage.removeItem('jwt');
+    }
+
+    const jwtParam = resetJwt ? '' : jwt
     try {
       const res = await fetch(`/api/crawl?trace=${trace}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: targetUrl, agentClaim, targetOriginClaim, bypassCache }),
+        body: JSON.stringify({ url: targetUrl, agentClaim, targetOriginClaim, bypassCache, jwt: jwtParam }),
       });
 
       if (!res.ok) {
@@ -67,6 +73,8 @@ export default function CrawlerPage() {
       setLinks(data.links || []);
       setHeaders(data.headers || null);
       setJwt(data.jwt || '');
+      localStorage.setItem('jwt', data.jwt || '');
+      setResetJwt(false);
       if (router && targetUrl !== url) {
         router.push(`/crawler/${encodeURIComponent(targetUrl)}?trace=${trace}`);
       }
@@ -129,15 +137,24 @@ export default function CrawlerPage() {
               className="w-full p-2 border border-gray-300 rounded"
             />
           </label>
-          <label className="block mt-4">
-            Bypass Claims Cache:
-            <input
-              type="checkbox"
-              checked={bypassCache}
-              onChange={(e) => setBypassCache(e.target.checked)}
-              className="ml-2"
-            />
-          </label>
+        <label className="inline-flex items-center mt-4 mr-4">
+          Reset JWT:
+          <input
+            type="checkbox"
+            checked={resetJwt}
+            onChange={(e) => setResetJwt(e.target.checked)}
+            className="ml-2"
+          />
+        </label>
+        <label className="inline-flex items-center mt-4">
+          Bypass Claims Cache:
+          <input
+            type="checkbox"
+            checked={bypassCache}
+            onChange={(e) => setBypassCache(e.target.checked)}
+            className="ml-2"
+          />
+        </label>
         </div>
         <button
           type="submit"
@@ -147,7 +164,8 @@ export default function CrawlerPage() {
           Crawl
         </button>
         <button
-          onClick={(e) => { e.preventDefault(); handleCopy(jwt) }}
+          onClick={(e) => {
+            e.preventDefault(); handleCopy(jwt) }}
           className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
           disabled={loading}
         >
