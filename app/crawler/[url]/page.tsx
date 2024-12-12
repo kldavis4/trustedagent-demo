@@ -25,6 +25,7 @@ export default function CrawlerPage() {
   const trace = searchParams.get('trace') === 'true';
 
   useEffect(() => {
+    console.log('here')
     // Extract the URL from the path only once when the component mounts
     const pathParts = pathname.split('/');
     const initialUrl = decodeURIComponent(pathParts[pathParts.length - 1]);
@@ -146,7 +147,7 @@ export default function CrawlerPage() {
           Crawl
         </button>
         <button
-          onClick={() => handleCopy(jwt)}
+          onClick={(e) => { e.preventDefault(); handleCopy(jwt) }}
           className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
           disabled={loading}
         >
@@ -154,7 +155,7 @@ export default function CrawlerPage() {
         </button>
 
         <button
-          onClick={() => setShowHeaders(!showHeaders)}
+          onClick={(e) => { e.preventDefault(); setShowHeaders(!showHeaders)}}
           className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
           disabled={loading}
         >
