@@ -16,6 +16,7 @@ export default function CrawlerPage() {
   const searchParams = useSearchParams();
   const [targetOriginClaim, setTargetOriginClaim] = useState('')
   const [agentClaim, setAgentClaim] = useState(defaultAgentClaim)
+  const [bypassCache, setBypassCache] = useState(false)
 
   const router = useRouter();
   const pathname = usePathname();
@@ -53,7 +54,7 @@ export default function CrawlerPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: targetUrl, agentClaim, targetOriginClaim }),
+        body: JSON.stringify({ url: targetUrl, agentClaim, targetOriginClaim, bypassCache }),
       });
 
       if (!res.ok) {
@@ -103,36 +104,45 @@ export default function CrawlerPage() {
           />
         </div>
 
-          <div className="border border-gray-300 p-4 rounded mb-6">
-            <h2 className="text-lg font-semibold mb-4">Claims</h2>
-            <label className="block mb-2">
-              Agent:
-              <input
-                type="url"
-                value={agentClaim}
-                onChange={(e) => setAgentClaim(e.target.value)}
-                required
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </label>
-            <label className="block mb-2">
-              Target Origin:
-              <input
-                type="url"
-                value={targetOriginClaim}
-                onChange={(e) => setTargetOriginClaim(e.target.value)}
-                required
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </label>
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            disabled={loading}
-          >
-            Crawl
-          </button>
+        <div className="border border-gray-300 p-4 rounded mb-6">
+          <h2 className="text-lg font-semibold mb-4">Claims</h2>
+          <label className="block mb-2">
+            Agent:
+            <input
+              type="url"
+              value={agentClaim}
+              onChange={(e) => setAgentClaim(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </label>
+          <label className="block mb-2">
+            Target Origin:
+            <input
+              type="url"
+              value={targetOriginClaim}
+              onChange={(e) => setTargetOriginClaim(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </label>
+          <label className="block mt-4">
+            Bypass Claims Cache:
+            <input
+              type="checkbox"
+              checked={bypassCache}
+              onChange={(e) => setBypassCache(e.target.checked)}
+              className="ml-2"
+            />
+          </label>
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
+        >
+          Crawl
+        </button>
       </form>
 
       {loading && (

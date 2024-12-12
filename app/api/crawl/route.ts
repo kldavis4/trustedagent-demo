@@ -25,7 +25,7 @@ const withProtocol = (url: string) => {
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the request body
-    const { url, targetOriginClaim, agentClaim } = await req.json();
+    const { url, targetOriginClaim, agentClaim, bypassCache } = await req.json();
 
     if (!url) {
       return new NextResponse('No URL provided in the request body', { status: 400 });
@@ -53,6 +53,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     if (trace === 'true') {
       headers['x-vercel-debug-proxy-timing'] = '1';
+    }
+
+    if (bypassCache) {
+      headers['x-agent-bypass-cache'] = '1';
     }
 
     const response = await axios.get(url, { headers });
