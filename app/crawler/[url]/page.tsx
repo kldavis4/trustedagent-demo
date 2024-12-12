@@ -144,6 +144,7 @@ export default function CrawlerPage() {
             checked={resetJwt}
             onChange={(e) => setResetJwt(e.target.checked)}
             className="ml-2"
+            disabled={jwt === ''}
           />
         </label>
         <label className="inline-flex items-center mt-4">
