@@ -33,6 +33,16 @@ npm run dev
 
 ## Usage
 
+## Options
+
+### Reset JWT
+
+By default, the JWT used for a request will be written to local storage and reused for subsequent requests. To reset the JWT, click the "Reset JWT" button.
+
+### Bypass Claims Cache
+
+JWT claims are cached by default. To bypass the cache for an existing token, check the "Bypass Claims Cache" checkbox.
+
 ## Scripts
 
 ### `generate-keys`
@@ -43,6 +53,6 @@ Generates a new private/public key pair.
 
 Validates a JWT token using the configured public key.
 
-### Query parameters
+## Query parameters
 
 - `trace`: Send trace header to the proxy server.
