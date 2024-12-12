@@ -6,23 +6,21 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function CrawlerPage() {
+  const defaultAgentClaim = process.env.NEXT_PUBLIC_AGENT_URL || window.location.hostname;
+
   const [url, setUrl] = useState('');
   const [links, setLinks] = useState<string[]>([]);
   const [headers, setHeaders] = useState<Record<string,string> | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
-  const [agentClaim, setAgentClaim] = useState('')
   const [targetOriginClaim, setTargetOriginClaim] = useState('')
+  const [agentClaim, setAgentClaim] = useState(defaultAgentClaim)
 
   const router = useRouter();
   const pathname = usePathname();
   const showHeaders = searchParams.get('headers') === 'true';
   const trace = searchParams.get('trace') === 'true';
-
-  useEffect(() => {
-    setAgentClaim(process.env.NEXT_PUBLIC_AGENT_URL || window.location.hostname);
-  }, []);
 
   useEffect(() => {
     // Extract the URL from the path only once when the component mounts
@@ -32,8 +30,8 @@ export default function CrawlerPage() {
     // Check if the initial URL is valid and different from the current URL state
     if (initialUrl && initialUrl !== 'crawler' && url !== initialUrl) {
       setUrl(initialUrl);
-      setTargetOriginClaim(initialUrl);
-      crawlUrl(initialUrl, targetOriginClaim, agentClaim);
+      setTargetOriginClaim(initialUrl)
+      crawlUrl(initialUrl, targetOriginClaim || initialUrl, agentClaim || defaultAgentClaim);
     }
   }, [pathname]); // Only run this effect when the pathname changes
 
