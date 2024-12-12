@@ -10,6 +10,8 @@ axios.defaults.proxy = {
   protocol: 'https',    // Use 'http' or 'https' based on your proxy server
 };
 
+// TODO add claims to the request inputs with proper defaults
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     // Parse the request body
@@ -26,7 +28,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const trace = searchParams.get('trace');
 
     // Define the headers
-    const xAgent = process.env.AGENT_URL || process.env.VERCEL_URL || 'http://localhost:3000';
+    let xAgent = process.env.AGENT_URL || process.env.VERCEL_URL || 'http://localhost:3000';
+    // Add protocol if missing
+    if (!xAgent.startsWith('http')) {
+      xAgent = `https://${xAgent}`;
+    }
     const xAgentToken = jwt.sign({ agent: xAgent, targetOrigin: `${parsedUrl.protocol}//${parsedUrl.hostname}` }, getPrivateKey(), { algorithm: 'RS256', expiresIn: '2h' });
 
     const headers: Record<string,string> = {
