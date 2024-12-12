@@ -21,6 +21,17 @@ export default function CrawlerPage() {
   const [showHeaders, setShowHeaders] = useState(searchParams.get('headers') === 'true')
   const [resetJwt, setResetJwt] = useState(false)
 
+  let claims: {
+    agent?: string;
+    targetOrigin?: string;
+    exp?: number;
+  } = {}
+  if (jwt) {
+    // decode claims
+    claims = JSON.parse(atob(jwt.split('.')[1]));
+    console.log(claims)
+  }
+
   const router = useRouter();
   const pathname = usePathname();
   const trace = searchParams.get('trace') === 'true';
@@ -117,26 +128,30 @@ export default function CrawlerPage() {
 
         <div className="border border-gray-300 p-4 rounded mb-6">
           <h2 className="text-lg font-semibold mb-4">Claims</h2>
-          <label className="block mb-2">
-            Agent:
-            <input
-              type="url"
-              value={agentClaim}
-              onChange={(e) => setAgentClaim(e.target.value)}
-              required
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </label>
-          <label className="block mb-2">
-            Target Origin:
-            <input
-              type="url"
-              value={targetOriginClaim}
-              onChange={(e) => setTargetOriginClaim(e.target.value)}
-              required
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          </label>
+          {claims?.exp && (<h3 className="mb-4">Expiration: <span className="test-sm text-gray-500">{new Date(claims?.exp * 1000).toLocaleString()}</span></h3>)}
+<label className="block mb-2">
+  Agent:
+  <input
+    type="url"
+    value={agentClaim}
+    onChange={(e) => setAgentClaim(e.target.value)}
+    required
+    className="w-full p-2 border border-gray-300 rounded"
+  />
+  {claims?.agent && <span className="text-sm text-gray-500">{claims?.agent}</span>}
+</label>
+<label className="block mb-2">
+  Target Origin:
+  <input
+    type="url"
+    value={targetOriginClaim}
+    onChange={(e) => setTargetOriginClaim(e.target.value)}
+    required
+    className="w-full p-2 border border-gray-300 rounded"
+  />
+  {claims?.targetOrigin && <span className="text-sm text-gray-500">{claims?.targetOrigin}</span>}
+</label>
+
         <label className="inline-flex items-center mt-4 mr-4">
           Reset JWT:
           <input
