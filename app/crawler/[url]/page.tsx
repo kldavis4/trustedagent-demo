@@ -163,7 +163,7 @@ export default function CrawlerPage() {
           />
         </label>
         <label className="inline-flex items-center mt-4">
-          Bypass Claims Cache:
+          Force Revalidate:
           <input
             type="checkbox"
             checked={bypassCache}
