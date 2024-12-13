@@ -114,7 +114,24 @@ export default function CrawlerPage() {
   return (
     <div className="bg-gray-100 min-h-screen p-4">
       <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Crawler</h1>
+<span
+  aria-controls="menu-:Rp6t6jlffb:"
+  aria-expanded="false"
+  aria-haspopup="true"
+  className="logo-button_logo__krGFL inline-flex items-center mr-2"
+  id="menu-button-:Rp6t6jlffbH1:"
+  role="button"
+>
+  <svg
+    aria-label="Vercel Logo"
+    fill="var(--geist-foreground)"
+    viewBox="0 0 75 65"
+    height="22"
+  >
+    <path d="M37.59.25l36.95 64H.64l36.95-64z"></path>
+  </svg>
+</span>
+<h1 className="text-2xl font-bold mb-4 inline-flex items-center">Crawler</h1>
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="border border-gray-300 p-4 rounded mb-6 bg-white">
             <h2 className="text-lg font-semibold mb-4">URL to crawl:</h2>
@@ -261,5 +278,5 @@ export default function CrawlerPage() {
         <ToastContainer/>
       </div>
     </div>
-      );
-      }
+  );
+}
