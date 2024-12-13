@@ -112,146 +112,154 @@ export default function CrawlerPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Crawler</h1>
-      <form onSubmit={handleSubmit} className="mb-6">
-        <div className="border border-gray-300 p-4 rounded mb-6">
-          <h2 className="text-lg font-semibold mb-4">URL to crawl:</h2>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            required
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-        </div>
-        <h1 className="text-2xl font-bold mb-4">Token</h1>
-        <div className="border border-gray-300 p-4 rounded mb-6">
-          <h2 className="text-lg font-semibold mb-4">Claims</h2>
-          {claims?.exp && (<h3 className="mb-4">Expiration: <span className="test-sm text-gray-500">{new Date(claims?.exp * 1000).toLocaleString()}</span></h3>)}
-<label className="block mb-2">
-  Agent:
-  <input
-    type="url"
-    value={agentClaim}
-    onChange={(e) => setAgentClaim(e.target.value)}
-    required
-    className="w-full p-2 border border-gray-300 rounded"
-  />
-  {claims?.agent && <span className="text-sm text-gray-500">{claims?.agent}</span>}
-</label>
-<label className="block mb-2">
-  Target Origin:
-  <input
-    type="url"
-    value={targetOriginClaim}
-    onChange={(e) => setTargetOriginClaim(e.target.value)}
-    required
-    className="w-full p-2 border border-gray-300 rounded"
-  />
-  {claims?.targetOrigin && <span className="text-sm text-gray-500">{claims?.targetOrigin}</span>}
-</label>
+    <div className="bg-gray-100 min-h-screen p-4">
+      <div className="max-w-4xl mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">Crawler</h1>
+        <form onSubmit={handleSubmit} className="mb-6">
+          <div className="border border-gray-300 p-4 rounded mb-6 bg-white">
+            <h2 className="text-lg font-semibold mb-4">URL to crawl:</h2>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <h1 className="text-2xl font-bold mb-4">Token</h1>
+          <div className="border border-gray-300 p-4 rounded mb-6 bg-white">
+            <h2 className="text-lg font-semibold mb-4">Claims</h2>
+            {claims?.exp && (<h3 className="mb-4">Expiration: <span
+              className="test-sm text-gray-500">{new Date(claims?.exp * 1000).toLocaleString()}</span></h3>)}
+            <label className="block mb-2">
+              Agent:
+              <input
+                type="url"
+                value={agentClaim}
+                onChange={(e) => setAgentClaim(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              {claims?.agent && <span className="text-sm text-gray-500">{claims?.agent}</span>}
+            </label>
+            <label className="block mb-2">
+              Target Origin:
+              <input
+                type="url"
+                value={targetOriginClaim}
+                onChange={(e) => setTargetOriginClaim(e.target.value)}
+                required
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+              {claims?.targetOrigin && <span className="text-sm text-gray-500">{claims?.targetOrigin}</span>}
+            </label>
 
-        <label className="inline-flex items-center mt-4 mr-4">
-          Regenerate:
-          <input
-            type="checkbox"
-            checked={resetJwt}
-            onChange={(e) => setResetJwt(e.target.checked)}
-            className="ml-2"
-            disabled={jwt === ''}
-          />
-        </label>
-        <label className="inline-flex items-center mt-4">
-          Force Revalidate:
-          <input
-            type="checkbox"
-            checked={bypassCache}
-            onChange={(e) => setBypassCache(e.target.checked)}
-            className="ml-2"
-          />
-        </label>
-        </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          Crawl
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault(); handleCopy(jwt) }}
-          className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          Copy Token
-        </button>
+            <label className="inline-flex items-center mt-4 mr-4">
+              Regenerate:
+              <input
+                type="checkbox"
+                checked={resetJwt}
+                onChange={(e) => setResetJwt(e.target.checked)}
+                className="ml-2"
+                disabled={jwt === ''}
+              />
+            </label>
+            <label className="inline-flex items-center mt-4">
+              Force Revalidate:
+              <input
+                type="checkbox"
+                checked={bypassCache}
+                onChange={(e) => setBypassCache(e.target.checked)}
+                className="ml-2"
+              />
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            disabled={loading}
+          >
+            Crawl
+          </button>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              handleCopy(jwt)
+            }}
+            className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
+            disabled={loading}
+          >
+            Copy Token
+          </button>
 
-        <button
-          onClick={(e) => { e.preventDefault(); setShowHeaders(!showHeaders)}}
-          className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
-          disabled={loading}
-        >
-          {showHeaders ? 'Hide Headers' : 'Show Headers'}
-        </button>
-      </form>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              setShowHeaders(!showHeaders)
+            }}
+            className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
+            disabled={loading}
+          >
+            {showHeaders ? 'Hide Headers' : 'Show Headers'}
+          </button>
+        </form>
 
-      {loading && (
-        <div className="flex justify-center items-center mb-6">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          <span className="ml-2">Crawling...</span>
-        </div>
-      )}
+        {loading && (
+          <div className="flex justify-center items-center mb-6">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            <span className="ml-2">Crawling...</span>
+          </div>
+        )}
 
-      {showHeaders && headers && !loading && (
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Response Headers</h2>
-          <ul className="list-disc pl-5 space-y-2 text-xs">
-            {Object.entries(headers).map(([key, value], index) => (
-              <li key={index}>
-                <strong>{key}:</strong>
-                <span onClick={() => handleCopy(value)}
-                  className="cursor-pointer text-blue-600 hover:underline"
-                >
+        {showHeaders && headers && !loading && (
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold mb-2">Response Headers</h2>
+            <ul className="list-disc pl-5 space-y-2 text-xs">
+              {Object.entries(headers).map(([key, value], index) => (
+                <li key={index}>
+                  <strong>{key}:</strong>
+                  <span onClick={() => handleCopy(value)}
+                        className="cursor-pointer text-blue-600 hover:underline"
+                  >
                   {value}
                 </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {links.length > 0 && !loading && (
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Extracted Links</h2>
-          <ul className="list-disc pl-5 space-y-2">
-            {links.map((link, index) => (
-              <li key={index}>
-                <a
-                  href="#"
-                  className="text-blue-600 hover:underline"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleLinkClick(link);
-                  }}
-                >
-                  {link}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        {links.length > 0 && !loading && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Extracted Links</h2>
+            <ul className="list-disc pl-5 space-y-2">
+              {links.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href="#"
+                    className="text-blue-600 hover:underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick(link);
+                    }}
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-      {error && (
-        <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
-          <h2 className="font-bold">Error</h2>
-          <pre>{error}</pre>
-        </div>
-      )}
+        {error && (
+          <div className="bg-red-100 text-red-700 p-4 rounded mt-4">
+            <h2 className="font-bold">Error</h2>
+            <pre>{error}</pre>
+          </div>
+        )}
 
-      <ToastContainer />
+        <ToastContainer/>
+      </div>
     </div>
-  );
-}
+      );
+      }
