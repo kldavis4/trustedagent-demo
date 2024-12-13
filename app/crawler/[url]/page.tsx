@@ -125,7 +125,7 @@ export default function CrawlerPage() {
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
-
+        <h1 className="text-2xl font-bold mb-4">Token</h1>
         <div className="border border-gray-300 p-4 rounded mb-6">
           <h2 className="text-lg font-semibold mb-4">Claims</h2>
           {claims?.exp && (<h3 className="mb-4">Expiration: <span className="test-sm text-gray-500">{new Date(claims?.exp * 1000).toLocaleString()}</span></h3>)}
@@ -153,7 +153,7 @@ export default function CrawlerPage() {
 </label>
 
         <label className="inline-flex items-center mt-4 mr-4">
-          Regenerate Token:
+          Regenerate:
           <input
             type="checkbox"
             checked={resetJwt}
