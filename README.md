@@ -35,13 +35,13 @@ npm run dev
 
 ## Options
 
-### Reset JWT
+### Regenerate Token
 
-By default, the JWT used for a request will be written to local storage and reused for subsequent requests. To reset the JWT, click the "Reset JWT" button.
+By default, the JWT used for a request will be written to local storage and reused for subsequent requests. To reset the JWT, click the "Regenerate Token" button.
 
-### Bypass Claims Cache
+### Force Revalidate
 
-JWT claims are cached by default. To bypass the cache for an existing token, check the "Bypass Claims Cache" checkbox.
+JWT claims are cached by default. To bypass the cache for an existing token, check the "Force Revalidate" checkbox.
 
 ## Scripts
 

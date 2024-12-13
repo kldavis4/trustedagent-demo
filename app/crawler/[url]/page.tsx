@@ -153,7 +153,7 @@ export default function CrawlerPage() {
 </label>
 
         <label className="inline-flex items-center mt-4 mr-4">
-          Reset JWT:
+          Regenerate Token:
           <input
             type="checkbox"
             checked={resetJwt}
@@ -185,7 +185,7 @@ export default function CrawlerPage() {
           className="bg-blue-500 text-white mx-2 px-4 py-2 rounded hover:bg-blue-600"
           disabled={loading}
         >
-          Copy JWT
+          Copy Token
         </button>
 
         <button
